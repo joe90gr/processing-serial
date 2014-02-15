@@ -6,24 +6,22 @@ String line;
 boolean ackFromArduino = false;
 int num = 0;
 boolean arduinoAckRecieved = false;
+byte b[];
 
 void serialEvent(Serial p) {
   char str = p.readChar();
    if(str == 'z'){
         println( str);
         arduinoAckRecieved= true;
-        //readFileAndSendSerial();
    }
-   
 } 
 
 void setup() {
-  reader = createReader("positions.txt");
+  b = loadBytes("g.BIN");
   println(Serial.list());
   myPort = new Serial(this, Serial.list()[0], 115200);
-  //readFileAndSendSerial();
   delay(1000);
-  myPort.write("s");  
+  myPort.write("s");   
 }
 
 void draw(){
@@ -32,24 +30,17 @@ void draw(){
     readFileAndSendSerial();
       println("looping");
   }
-
 }   
 
 void readFileAndSendSerial(){
-    try {
-    line = reader.readLine();
-  } catch (IOException e) {
-    e.printStackTrace();
-    line = null;
-  }
-  if (line == null) {
-    noLoop();  
-  } else {
-      delay(1000);
-      writeTheData();
-  } 
+    line = "";
+    for (int i = 0; i < b.length; i++) {  
+      line = line + hex(b[i]); 
+    }
+    print(line);
+    delay(1000);
+    writeTheData();
 }
-
 
 void writeTheData(){
       int buffersize = 64;
