@@ -1,10 +1,7 @@
 import processing.serial.*;
 
 Serial myPort;
-BufferedReader reader;
-String line;
 boolean ackFromArduino = false;
-int num = 0;
 boolean arduinoAckRecieved = false;
 byte b[];
 
@@ -17,7 +14,7 @@ void serialEvent(Serial p) {
 } 
 
 void setup() {
-  b = loadBytes("g.BIN");
+  b = loadBytes("memtest1.BIN");
   println(Serial.list());
   myPort = new Serial(this, Serial.list()[0], 115200);
   delay(1000);
@@ -28,21 +25,25 @@ void draw(){
   if(arduinoAckRecieved){
     arduinoAckRecieved = !arduinoAckRecieved;
     readFileAndSendSerial();
-      println("looping");
   }
 }   
 
 void readFileAndSendSerial(){
-    line = "";
-    for (int i = 0; i < b.length; i++) {  
-      line = line + hex(b[i]); 
-    }
-    print(line);
+    String line = getFileAndBuffer();
+    //println(line);
     delay(1000);
-    writeTheData();
+    writeTheData(line);
 }
 
-void writeTheData(){
+String getFileAndBuffer(){
+    String x = "";
+    for (int i = 0; i < b.length; i++) {  
+      x = x + hex(b[i]); 
+    }
+    return x;
+}
+
+void writeTheData(String line){
       int buffersize = 64;
       float floatVersion = (float)line.length()/buffersize;
       println(line.length(),floatVersion);
