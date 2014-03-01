@@ -14,7 +14,7 @@ void serialEvent(Serial p) {
 } 
 
 void setup() {
-  b = loadBytes("memtest1.BIN");
+  b = loadBytes("g.BIN");
   println(Serial.list());
   myPort = new Serial(this, Serial.list()[0], 115200);
   delay(1000);
@@ -54,7 +54,7 @@ void writeTheData(String line){
         boolean x = (line.length() - i*buffersize ) < buffersize;
         int fragmentLength = x ?-(i*buffersize - line.length()) : buffersize;
         myPort.write(line.substring(i*buffersize,(i*buffersize)+fragmentLength));  
-        delay(15);
+        delay(140); //delay set arduino for slower memories
       }  
 }
 
